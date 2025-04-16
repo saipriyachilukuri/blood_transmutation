@@ -1,52 +1,73 @@
 
-import React from 'react';
-import BloodTransfusionHeader from '../components/CareerVisualizerHeader';
-import BloodInventory from '../components/BloodInventory';
-import DonationRequests from '../components/DonationRequests';
-import RecentDonors from '../components/RecentDonors';
+import React, { useState } from 'react';
+import BloodTransfusionHeader from '../components/BloodTransfusionHeader';
+import BloodTypeSelector from '../components/BloodTypeSelector';
+import ConversionProcess from '../components/ConversionProcess';
 import { useToast } from '@/hooks/use-toast';
-import { Button } from '@/components/ui/button';
+import { checkBloodTypeConversion, type BloodType } from '../utils/bloodTypeUtils';
 
 const BloodTransfusionDashboard: React.FC = () => {
   const { toast } = useToast();
+  const [sourceType, setSourceType] = useState<BloodType>('A+');
+  const [targetType, setTargetType] = useState<BloodType>('B+');
+  const [showResults, setShowResults] = useState(false);
+  const [compatibility, setCompatibility] = useState({
+    isCompatible: false,
+    conversionSteps: [] as string[]
+  });
   
-  const handleEmergencyRequest = () => {
-    toast({
-      title: "Emergency Request Initiated",
-      description: "An emergency blood request has been sent to all eligible donors.",
-      variant: "destructive",
-    });
-  };
-
-  const handleDonationSchedule = () => {
-    toast({
-      title: "Donation Scheduled",
-      description: "Thank you for scheduling a donation. You will receive a confirmation email shortly.",
-    });
+  const handleCheckCompatibility = () => {
+    if (sourceType === targetType) {
+      toast({
+        title: "Same Blood Types",
+        description: "The source and target blood types are the same. No conversion needed.",
+        variant: "default",
+      });
+      setCompatibility({
+        isCompatible: true,
+        conversionSteps: ["No conversion needed - blood types are identical"]
+      });
+    } else {
+      const result = checkBloodTypeConversion(sourceType, targetType);
+      setCompatibility(result);
+      
+      if (result.isCompatible) {
+        toast({
+          title: "Conversion Possible",
+          description: `${sourceType} blood can be converted to ${targetType}`,
+          variant: "default",
+        });
+      } else {
+        toast({
+          title: "Conversion Not Possible",
+          description: `${sourceType} blood cannot be safely converted to ${targetType}`,
+          variant: "destructive",
+        });
+      }
+    }
+    setShowResults(true);
   };
 
   return (
     <div className="container mx-auto px-4 py-8">
       <BloodTransfusionHeader />
       
-      <div className="flex flex-col md:flex-row gap-4 mb-8">
-        <Button 
-          onClick={handleEmergencyRequest}
-          className="flex-1 bg-red-600 hover:bg-red-700 text-white"
-        >
-          Initiate Emergency Request
-        </Button>
-        <Button 
-          onClick={handleDonationSchedule}
-          className="flex-1"
-        >
-          Schedule a Donation
-        </Button>
-      </div>
+      <BloodTypeSelector
+        sourceType={sourceType}
+        targetType={targetType}
+        setSourceType={(type) => setSourceType(type as BloodType)}
+        setTargetType={(type) => setTargetType(type as BloodType)}
+        onCheckCompatibility={handleCheckCompatibility}
+      />
       
-      <BloodInventory />
-      <DonationRequests />
-      <RecentDonors />
+      {showResults && (
+        <ConversionProcess
+          sourceType={sourceType}
+          targetType={targetType}
+          isCompatible={compatibility.isCompatible}
+          conversionSteps={compatibility.conversionSteps}
+        />
+      )}
     </div>
   );
 };
