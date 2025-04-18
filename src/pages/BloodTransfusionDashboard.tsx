@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import Navigation from '../components/Navigation';
 import BloodTransfusionHeader from '../components/BloodTransfusionHeader';
 import BloodTypeSelector from '../components/BloodTypeSelector';
 import ConversionProcess from '../components/ConversionProcess';
@@ -49,25 +50,28 @@ const BloodTransfusionDashboard: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <BloodTransfusionHeader />
-      
-      <BloodTypeSelector
-        sourceType={sourceType}
-        targetType={targetType}
-        setSourceType={(type) => setSourceType(type as BloodType)}
-        setTargetType={(type) => setTargetType(type as BloodType)}
-        onCheckCompatibility={handleCheckCompatibility}
-      />
-      
-      {showResults && (
-        <ConversionProcess
+    <div className="min-h-screen flex flex-col">
+      <Navigation />
+      <div className="container mx-auto px-4 py-8">
+        <BloodTransfusionHeader />
+        
+        <BloodTypeSelector
           sourceType={sourceType}
           targetType={targetType}
-          isCompatible={compatibility.isCompatible}
-          conversionSteps={compatibility.conversionSteps}
+          setSourceType={(type) => setSourceType(type as BloodType)}
+          setTargetType={(type) => setTargetType(type as BloodType)}
+          onCheckCompatibility={handleCheckCompatibility}
         />
-      )}
+        
+        {showResults && (
+          <ConversionProcess
+            sourceType={sourceType}
+            targetType={targetType}
+            isCompatible={compatibility.isCompatible}
+            conversionSteps={compatibility.conversionSteps}
+          />
+        )}
+      </div>
     </div>
   );
 };
