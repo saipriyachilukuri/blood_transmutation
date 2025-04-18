@@ -1,6 +1,5 @@
 
 import React, { useState } from 'react';
-import Navigation from '../components/Navigation';
 import BloodTransfusionHeader from '../components/BloodTransfusionHeader';
 import BloodTypeSelector from '../components/BloodTypeSelector';
 import ConversionProcess from '../components/ConversionProcess';
@@ -51,7 +50,6 @@ const BloodTransfusionDashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navigation />
       <div className="container mx-auto px-4 py-8">
         <BloodTransfusionHeader />
         

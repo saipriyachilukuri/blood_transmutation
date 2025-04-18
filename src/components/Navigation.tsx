@@ -1,7 +1,6 @@
-
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Info, Droplet } from 'lucide-react';
+import { Home, Info, Droplet, Mail } from 'lucide-react'; // ✅ Import Mail icon
 
 const Navigation: React.FC = () => {
   const location = useLocation();
@@ -38,6 +37,17 @@ const Navigation: React.FC = () => {
             >
               <Info className="h-4 w-4 mr-2" />
               About Us
+            </Link>
+            <Link 
+              to="/contact" 
+              className={`flex items-center px-3 py-2 rounded-md text-sm font-medium ${
+                location.pathname === '/contact' 
+                  ? 'text-red-600' 
+                  : 'text-gray-700 hover:text-red-600'
+              }`}
+            >
+              <Mail className="h-4 w-4 mr-2" />
+              Contact Us
             </Link>
             <Link 
               to="/converter" 
